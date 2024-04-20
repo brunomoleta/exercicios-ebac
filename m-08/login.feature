@@ -9,9 +9,8 @@ Funcionalidade: Login
     Dado que o usuário está na página de Login
 
   Esquema do Cenário: Login feito com dados válidos efetuado com sucesso
-    Quando usuário enviar o email <email>
-    E a senha <senha_valida>
-    Então usuário é direcionado a página de checkout
+    Quando usuário enviar o <email> e <senha_valida>
+    Então usuário é direcionado a página de checkout  e lhe aparece uma mensagem de sucesso
 
     Exemplos:
       | email              | senha_valida     |
@@ -24,8 +23,7 @@ Funcionalidade: Login
     Então usuário permanece na página de Login e lhe aparece uma mensagem de erro
 
   Esquema do Cenário: Login não permitido pois foi enviado senha incorreta
-    Quando usuário enviar o email <email>
-    E a senha <senha_invalida>
+    Quando usuário enviar <email> e <senha_invalida>
     Então usuário permanece na página de Login e lhe aparece uma mensagem de erro
 
     Exemplos:
