@@ -1,0 +1,51 @@
+{
+	"id": "04babd87-b8ef-4d1e-ae57-054c28d46e21",
+	"name": "ServerRest",
+	"values": [
+		{
+			"key": "localUrl",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "emailSucesso",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "senhaSucesso",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "userNotFound",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "invalidLogin",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-04-25T15:29:09.161Z",
+	"_postman_exported_using": "Postman/10.24.15"
+}

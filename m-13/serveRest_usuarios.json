@@ -1,0 +1,612 @@
+{
+	"info": {
+		"_postman_id": "6c667179-e9a0-415c-910b-e6144122d6d2",
+		"name": "Usuários",
+		"description": "# About this collection\n\nThis collection helps ensure your API continues to work as expected after updates or changes. It contains sample requests for a series of tests that validate different aspects of an API, including:\n\n1. **Status code verification:** We'll check if the API returns the expected status codes for various requests, ensuring reliability and proper error handling.\n2. **JSON schema verification:** We'll make sure the JSON response conforms to a specified JSON Schema, ensuring API contracts are honored.\n3. **Response time verification:** We'll verify that the API's response time is within the acceptable range, providing a smooth user experience and optimizing performance.\n4. **Response body verification:** We'll validate the structure and content of the response body for accuracy, ensuring the integrity of the data and preventing potential issues downstream.\n5. **Header verification:** We'll confirm the presence and correct values of specific headers in the response, enabling secure and well-structured communication between your app and its users.\n    \n\n## **Using this collection**\n\n**Step 1:** Send the sample requests and view the response and test results.\n\n**Step 2:** Replace the sample request URLs with your desired API endpoints.\n\n**Step 3:** Customize the tests in the \"Tests\" tab if needed. Don't forget to save your changes.\n\n**Step 4:** Run the collection by selecting \"Run\".\n\n### Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28070364"
+	},
+	"item": [
+		{
+			"name": "Cadastrar Usuário",
+			"item": [
+				{
+					"name": "Sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é Created(201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Deve dar Mensagem de sucesso\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Cadastro realizado com sucesso\");",
+									"});",
+									"pm.test(\"Response retorna um token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('_id');",
+									"});",
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"userId\", jsonData._id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"{{$randomFullName}}\",\r\n  \"email\": \"{{emailSucesso}}\",\r\n  \"password\": \"{{senhaSucesso}}\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				},
+				{
+					"name": "Inválido - Email já existe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é Bad Request(400)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensagem adequada email duplicado\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Este email já está sendo usado\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"{{$randomFullName}}\",\r\n  \"email\": {{emailSucesso}},\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				},
+				{
+					"name": "Inválido - Adm ausente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é Bad request(400)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensagem adequada adm obrigatório\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.administrador).to.eql(\"administrador é obrigatório\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"{{$randomFullName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"senha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login Usuário",
+			"item": [
+				{
+					"name": "Login Sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.authorization.split(\" \")[1])",
+									"pm.test(\"Status code é OK(200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve dar Mensagem de sucesso\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Login realizado com sucesso\");",
+									"});",
+									"pm.test(\"Response retorna um token\", function () {",
+									"    pm.expect(jsonData).to.have.property('authorization');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"{{emailSucesso}}\",\r\n  \"password\": \"{{senhaSucesso}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/login",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				},
+				{
+					"name": "Inválido - Email inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const message = pm.environment.get(\"invalidLogin\");",
+									"pm.test(\"Status code é Unauthorized(401)\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"pm.test(\"Mensagem adequada email duplicado\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(message);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{senhaSucesso}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/login",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				},
+				{
+					"name": "Inválido - Senha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const message = pm.environment.get(\"invalidLogin\");",
+									"pm.test(\"Status code é Unauthorized(401)\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"pm.test(\"Mensagem adequada para senha equivocada\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(message);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"{{emailSucesso}}\",\r\n  \"password\": \"{{$randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/login",
+						"description": "The test on this request asserts that the reponse has a \"200 OK\" status.\n\nYou can check for any HTTP status code using the same mechanism, for example `pm.response.to.have.status(403)` if your API should return an \"Unauthorized\" response."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Listar usuários",
+			"item": [
+				{
+					"name": "Listar usuários",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é OK(200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna quantidade de usuários\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.quantidade).to.be.a('number');",
+									"    pm.expect(jsonData.quantidade).to.be.at.least(0);",
+									"});",
+									"pm.test(",
+									"    \"Se houver usuários cadastrados, cada um deve retornar de nome, email, senha, se é adm e o _id\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if(jsonData.quantidade > 0) {",
+									"        pm.expect(jsonData).to.have.property('usuarios');",
+									"        jsonData['usuarios'].forEach(usuario => {",
+									"            pm.expect(usuario).to.be.an('object');",
+									"            pm.expect(usuario).to.have.keys(['nome', 'email', 'password', 'administrador', '_id']);",
+									"        });",
+									"    }",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"foo\": \"bar\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Listar usuário por Id",
+			"item": [
+				{
+					"name": "Id - Sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é OK(200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Deve mostrar nome, email, senha, adm e _id\", function () {",
+									"    const usuario = pm.response.json();",
+									"    pm.expect(usuario).to.be.an('object');",
+									"    pm.expect(usuario).to.have.keys(['nome', 'email', 'password', 'administrador', '_id']);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{userId}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				},
+				{
+					"name": "Id - Inválido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const message = pm.environment.get(\"userNotFound\");",
+									"pm.test(\"Status code é Bad request(400)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensagem id não existe\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(message);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{$randomUserName}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Listar usuário por Id Copy",
+			"item": [
+				{
+					"name": "Id - Sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é OK(200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Mensagem de exclusão com sucesso\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{userId}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				},
+				{
+					"name": "Id - Inválido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const message = pm.environment.get(\"userNotFound\");",
+									"",
+									"pm.test(\"Status code é Bad request(200)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Usuário não encontrado\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(message);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{$randomUserName}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Editar Usuário",
+			"item": [
+				{
+					"name": "Id - Sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é OK(200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Mensagem de exclusão com sucesso\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"{{$randomFullName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{userId}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				},
+				{
+					"name": "Id - Inválido Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const message = pm.environment.get(\"userNotFound\");",
+									"",
+									"pm.test(\"Status code é Bad request(200)\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Obrigatório passar todos os dados\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.password).to.eql(\"password é obrigatório\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"{{$randomFullName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{localUrl}}/usuarios/{{userId}}",
+						"description": "This request has a test asserting that a response is received within a specific time limit (in this case 5 seconds). This is useful for ensuring consistent API performance.\n\nYou can access details of the response, such as response time, on the `pm.response` object. See the [response object documentation](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#scripting-with-response-data) for other properties available."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://postman-echo.com"
+		}
+	]
+}
