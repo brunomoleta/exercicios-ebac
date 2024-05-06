@@ -10,4 +10,4 @@ const below1000 = () => {
     return sum
 }
 
-console.log(below1000())
+module.exports = below1000;

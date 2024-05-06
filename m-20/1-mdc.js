@@ -29,4 +29,4 @@ const mdc = (a, b) => {
     return Math.max(...mdc);
 }
 
-console.log(mdc(12350,854120))
+module.exports = mdc;
